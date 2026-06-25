@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
 import { ButtonLink } from "@/components/ui/Button";
 import { SITE } from "@/lib/siteData";
@@ -6,6 +6,7 @@ import Hero3D from "@/components/Hero3D";
 import {
   Phone, Check, ShieldCheck, FileText,
   DollarSign, Globe, CreditCard, ArrowRight, Handshake, Cpu, Heart,
+  ChevronDown, AlertTriangle, Scale,
 } from "lucide-react";
 
 function Reveal({
@@ -43,6 +44,8 @@ export default function Home() {
       <Story />
       <Testimonials />
       <HowItWorks />
+      <CROACompliance />
+      <FAQ />
       <FinalCTA />
     </>
   );
@@ -313,6 +316,147 @@ function HowItWorks() {
                 <p className="font-mono text-[80px] font-bold leading-none text-[var(--color-graphite)] select-none">{s.num}</p>
                 <h3 className="mt-2 font-sans font-semibold text-xl text-[var(--color-chalk)]">{s.title}</h3>
                 <p className="mt-3 text-[var(--color-fog)] leading-relaxed">{s.body}</p>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function CROACompliance() {
+  return (
+    <section
+      id="compliance"
+      className="py-16 sm:py-20 bg-[var(--color-obsidian)] border-t border-[var(--semantic-border-subtle)]"
+      aria-label="Legal compliance disclosures"
+    >
+      <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+        <Reveal>
+          <div className="flex items-center gap-3 mb-6">
+            <Scale size={22} className="text-[var(--color-brass)] shrink-0" aria-hidden="true" />
+            <p className="font-mono text-[11px] tracking-[0.08em] uppercase text-[var(--color-brass)]">Legal Disclosures</p>
+          </div>
+          <h2 className="text-xl font-sans font-semibold text-[var(--color-chalk)] mb-6">
+            Consumer Rights &amp; Compliance Disclosures
+          </h2>
+        </Reveal>
+        <div className="grid md:grid-cols-2 gap-5">
+          <Reveal delay={0.1}>
+            <div className="border border-[var(--semantic-border-subtle)] rounded-lg p-6 bg-[var(--color-carbon)]">
+              <div className="flex items-start gap-3 mb-3">
+                <AlertTriangle size={16} className="text-[var(--color-brass)] shrink-0 mt-0.5" aria-hidden="true" />
+                <h3 className="font-sans font-semibold text-[var(--color-chalk)] text-sm">Credit Repair — CROA Disclosure</h3>
+              </div>
+              <p className="text-[var(--color-fog)] text-sm leading-relaxed">
+                617 East Trust is a credit repair organization as defined under federal law (15 U.S.C. §1679).
+                We do not charge fees before services are fully performed. You have the right to cancel any
+                contract within <strong className="text-[var(--color-linen)]">3 business days</strong> of signing.
+                We cannot guarantee the removal of accurate, current, or verifiable information from your credit
+                report. You have the right to dispute inaccurate information directly with the credit bureaus at no charge.
+              </p>
+            </div>
+          </Reveal>
+          <Reveal delay={0.15}>
+            <div className="border border-[var(--semantic-border-subtle)] rounded-lg p-6 bg-[var(--color-carbon)]">
+              <div className="flex items-start gap-3 mb-3">
+                <AlertTriangle size={16} className="text-[var(--color-drafting-blue)] shrink-0 mt-0.5" aria-hidden="true" />
+                <h3 className="font-sans font-semibold text-[var(--color-chalk)] text-sm">SBA Consulting — Not a Lender</h3>
+              </div>
+              <p className="text-[var(--color-fog)] text-sm leading-relaxed">
+                617 East Trust is a consulting firm, not a bank, lender, or financial institution. We do not make
+                lending decisions or issue loans. SBA loan consulting is advisory only — we help prepare applications
+                and connect you with SBA-approved lenders. We are not a law firm and do not provide legal advice.
+                Loan approval is determined solely by the lender.
+              </p>
+            </div>
+          </Reveal>
+        </div>
+        <Reveal delay={0.2}>
+          <p className="mt-6 text-xs text-[var(--color-ash)] text-center">
+            Questions about your rights?{" "}
+            <a href="/terms" className="text-[var(--color-drafting-blue)] hover:underline">Terms of Service</a>
+            {" "}&middot;{" "}
+            <a href="/privacy" className="text-[var(--color-drafting-blue)] hover:underline">Privacy Policy</a>
+            {" "}&middot;{" "}
+            <a href={SITE.phoneHref} className="text-[var(--color-drafting-blue)] hover:underline">{SITE.phone}</a>
+          </p>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+const FAQ_ITEMS = [
+  {
+    q: "How do I qualify for an SBA loan in North Carolina?",
+    a: "Your business must be for-profit, operate in the US, have reasonable owner equity, and have exhausted other financing options. 617 East Trust helps you assess eligibility and navigate the application process for SBA 7(a), 504, and Microloan programs. Our 15+ years of Charlotte commercial banking experience means we know exactly what lenders look for.",
+  },
+  {
+    q: "How long does credit repair take?",
+    a: "Most clients see measurable improvements within 30\u201390 days. Under the Fair Credit Reporting Act, credit bureaus have 30 days to investigate disputes. Results vary based on the nature of negative items on your report. We provide transparent, legal credit repair services with no guarantees of specific score increases, in full compliance with the Credit Repair Organizations Act.",
+  },
+  {
+    q: "What credit score do I need for an SBA 7(a) loan?",
+    a: "Most SBA 7(a) lenders look for a personal credit score of at least 640\u2013680, though requirements vary by lender and loan amount. Business credit history, cash flow, and collateral also factor into approval. If your score isn't there yet, our credit repair and SBA consulting services work together to get you ready.",
+  },
+  {
+    q: "What is the difference between an LLC and a corporation in NC?",
+    a: "An LLC offers flexible management, pass-through taxation, and limited liability with less administrative overhead \u2014 ideal for most small businesses. A corporation provides a more formal structure, better for raising investment capital, with certain tax advantages. We help you choose the right entity and register with the NC Secretary of State, often within 24 hours.",
+  },
+  {
+    q: "How is 617 East Trust different from LegalZoom or online platforms?",
+    a: "Unlike national platforms, we provide personalized, hands-on support from a team with 15+ years of Charlotte commercial banking experience. We answer the phone, know the local SBA lenders personally, and stay with you after the paperwork is done. You get a partner, not a login.",
+  },
+  {
+    q: "Does 617 East Trust guarantee credit repair results?",
+    a: "No \u2014 and by law, no credit repair company can. Under the Credit Repair Organizations Act (CROA), we cannot guarantee the removal of accurate, timely negative information from your credit report. What we do guarantee: legal, ethical dispute services, full transparency, and no fees charged before services are performed.",
+  },
+];
+
+function FAQ() {
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
+  return (
+    <section
+      id="faq"
+      className="py-24 sm:py-32 bg-[var(--color-void)] border-t border-[var(--semantic-border-subtle)]"
+      aria-label="Frequently asked questions"
+    >
+      <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+        <Reveal>
+          <p className="eyebrow mb-4">[08] FAQ</p>
+          <h2 className="text-balance text-[var(--color-chalk)]">Questions We Hear Every Day.</h2>
+          <p className="mt-4 text-[var(--color-fog)] leading-relaxed">Straight answers. No jargon. No runaround.</p>
+        </Reveal>
+        <div className="mt-12 space-y-3" role="list">
+          {FAQ_ITEMS.map((item, i) => (
+            <Reveal key={i} delay={i * 0.06}>
+              <div className="border border-[var(--semantic-border-subtle)] rounded-lg overflow-hidden" role="listitem">
+                <button
+                  className="w-full flex items-center justify-between gap-4 px-6 py-5 text-left bg-[var(--color-carbon)] hover:bg-[var(--color-graphite)] transition-colors"
+                  onClick={() => setOpenIndex(openIndex === i ? null : i)}
+                  aria-expanded={openIndex === i}
+                  aria-controls={`faq-answer-${i}`}
+                >
+                  <span className="font-sans font-medium text-[var(--color-chalk)] text-sm leading-snug">{item.q}</span>
+                  <ChevronDown
+                    size={18}
+                    className={`shrink-0 text-[var(--color-brass)] transition-transform duration-200 ${
+                      openIndex === i ? "rotate-180" : ""
+                    }`}
+                    aria-hidden="true"
+                  />
+                </button>
+                {openIndex === i && (
+                  <div
+                    id={`faq-answer-${i}`}
+                    className="px-6 py-5 bg-[var(--color-obsidian)] text-[var(--color-fog)] text-sm leading-relaxed"
+                    role="region"
+                  >
+                    {item.a}
+                  </div>
+                )}
               </div>
             </Reveal>
           ))}
