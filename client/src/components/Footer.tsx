@@ -4,7 +4,7 @@ import { SITE } from "@/lib/siteData";
 
 export default function Footer() {
   return (
-    <footer className="bg-[var(--color-ink)] text-[var(--color-paper)]">
+    <footer className="bg-[var(--color-carbon)] text-[var(--color-chalk)] border-t border-[var(--semantic-border-subtle)]">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-16">
         {/* Thesis recap */}
         <div className="border-b border-white/10 pb-10 mb-10">

@@ -1,23 +1,32 @@
 @import "tailwindcss";
+@import url("https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;1,8..60,300;1,8..60,400&family=Inter:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap");
 
 /*
- * 617 East Trust — "Foundation Plus" Design System
- * Architectural paper, structured by technology, warmed by human hands.
- * Three-tier token architecture: primitives → semantics → components.
+ * 617 East Trust — "Cinematic Dark" Design System
+ * Black canvas. Content lit like film subjects.
+ * Brass warmth cuts through the void.
  */
 
-/* ─────────── Tier 1: Primitives (atomic values) ─────────── */
+/* ─────────── Tier 1: Primitives ─────────── */
 :root {
-  --color-paper: #f7f5f2;
-  --color-ink: #1a1a1a;
-  --color-graphite: #4a4a4a;
-  --color-smoke: #8a8a8a;
-  --color-drafting-blue: #2e5a8b;
-  --color-brass: #b87333;
-  --color-sage: #7a8b7a;
+  --color-void: #000000;
+  --color-carbon: #0d0d0d;
+  --color-obsidian: #141414;
+  --color-graphite: #1e1e1e;
+  --color-steel: #2a2a2a;
+  --color-smoke: #3a3a3a;
+  --color-ash: #666666;
+  --color-bone: #999999;
+  --color-fog: #b3b3b3;
+  --color-linen: #f5f5f0;
   --color-chalk: #ffffff;
 
-  /* Spacing (4px base grid) */
+  --color-brass: #c8853a;
+  --color-brass-dim: #8a5a22;
+  --color-brass-glow: rgba(200, 133, 58, 0.15);
+  --color-drafting-blue: #4a7ab5;
+  --color-sage: #7a9b7a;
+
   --spacing-1: 4px;
   --spacing-2: 8px;
   --spacing-3: 12px;
@@ -29,35 +38,38 @@
   --spacing-20: 80px;
   --spacing-24: 96px;
 
-  /* Border radii */
+  --radius-sharp: 2px;
   --radius-tech: 4px;
+  --radius-card: 10px;
   --radius-functional: 8px;
   --radius-human: 16px;
   --radius-pill: 9999px;
 
-  /* Shadows */
-  --shadow-sm: 0 1px 2px 0 rgb(26 26 26 / 0.05);
-  --shadow-md: 0 4px 6px -1px rgb(26 26 26 / 0.1);
-  --shadow-lg: 0 10px 15px -3px rgb(26 26 26 / 0.1);
-  --shadow-warm: 0 4px 20px rgb(184 115 51 / 0.15);
-  --shadow-glow: 0 0 20px rgb(46 90 139 / 0.3);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.5);
+  --shadow-md: 0 4px 20px rgba(0,0,0,0.4);
+  --shadow-lg: 0 10px 40px rgba(0,0,0,0.6);
+  --shadow-card: rgba(0,0,0,0.35) 0px 10px 30px 0px, rgba(255,255,255,0.04) 0px 1px 0px inset;
+  --shadow-brass: 0 4px 30px rgba(200,133,58,0.25);
+  --shadow-glow: 0 0 40px rgba(200,133,58,0.12);
 
-  /* Transitions */
   --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 600ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* ─────────── Tier 2: Semantic tokens (map primitives to roles) ─────────── */
+/* ─────────── Tier 2: Semantic tokens ─────────── */
 :root {
-  --semantic-bg-primary: var(--color-paper);
-  --semantic-bg-elevated: var(--color-chalk);
-  --semantic-text-primary: var(--color-ink);
-  --semantic-text-secondary: var(--color-graphite);
-  --semantic-text-tertiary: var(--color-smoke);
-  --semantic-border-subtle: rgb(74 74 74 / 0.1);
-  --semantic-border-strong: var(--color-ink);
+  --semantic-bg-primary: var(--color-void);
+  --semantic-bg-elevated: var(--color-carbon);
+  --semantic-bg-card: var(--color-obsidian);
+  --semantic-text-primary: var(--color-chalk);
+  --semantic-text-secondary: var(--color-fog);
+  --semantic-text-tertiary: var(--color-bone);
+  --semantic-text-muted: var(--color-ash);
+  --semantic-border-subtle: rgba(255,255,255,0.06);
+  --semantic-border-strong: rgba(255,255,255,0.15);
+  --semantic-accent-primary: var(--color-brass);
   --semantic-accent-tech: var(--color-drafting-blue);
-  --semantic-accent-human: var(--color-brass);
   --semantic-accent-local: var(--color-sage);
 }
 
@@ -65,21 +77,19 @@
 @theme inline {
   --color-background: var(--semantic-bg-primary);
   --color-foreground: var(--semantic-text-primary);
-  --color-card: var(--semantic-bg-elevated);
+  --color-card: var(--semantic-bg-card);
   --color-card-foreground: var(--semantic-text-primary);
-  --color-muted: var(--color-smoke);
+  --color-muted: var(--color-ash);
   --color-muted-foreground: var(--semantic-text-secondary);
   --color-border: var(--semantic-border-subtle);
-  --color-primary: var(--semantic-accent-human);
-  --color-primary-foreground: var(--color-chalk);
+  --color-primary: var(--semantic-accent-primary);
+  --color-primary-foreground: var(--color-void);
   --color-secondary: var(--semantic-accent-tech);
   --color-secondary-foreground: var(--color-chalk);
-
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-serif: "Source Serif 4", Georgia, "Times New Roman", serif;
   --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", monospace;
-
-  --radius-lg: var(--radius-human);
+  --radius-lg: var(--radius-card);
   --radius-md: var(--radius-functional);
   --radius-sm: var(--radius-tech);
 }
@@ -92,6 +102,7 @@
   html {
     scroll-behavior: smooth;
     -webkit-text-size-adjust: 100%;
+    background-color: var(--color-void);
   }
   body {
     background-color: var(--semantic-bg-primary);
@@ -102,137 +113,144 @@
     letter-spacing: -0.16px;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
   }
-  h1, h2, h3 {
+  h1 {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    line-height: 1.0;
+    letter-spacing: -0.05em;
+    font-size: clamp(3rem, 8vw, 7rem);
+  }
+  h2 {
     font-family: var(--font-serif);
     font-weight: 400;
     line-height: 1.1;
-    letter-spacing: -1.44px;
+    letter-spacing: -0.04em;
+    font-size: clamp(2rem, 5vw, 3.5rem);
   }
-  h1 { font-size: clamp(2.5rem, 6vw, 4.5rem); }
-  h2 { font-size: clamp(2rem, 4.5vw, 3rem); letter-spacing: -0.72px; }
-  h3 { font-size: clamp(1.5rem, 3vw, 1.875rem); letter-spacing: -0.6px; }
+  h3 {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+    font-size: clamp(1.4rem, 3vw, 1.875rem);
+  }
   h4 {
     font-family: var(--font-sans);
-    font-weight: 600;
-    font-size: 1.5rem;
+    font-weight: 500;
+    font-size: 1.25rem;
     line-height: 1.2;
-    letter-spacing: -0.6px;
+    letter-spacing: -0.02em;
   }
   a { color: inherit; text-decoration: none; }
   ::selection {
-    background-color: rgb(184 115 51 / 0.25);
-    color: var(--color-ink);
+    background-color: rgba(200, 133, 58, 0.3);
+    color: var(--color-chalk);
   }
 }
 
-/* ─────────── Tier 3: Component utilities ─────────── */
+/* ─────────── Components ─────────── */
 @layer components {
-  .container-trust {
-    width: 100%;
-    margin-inline: auto;
-    padding-inline: var(--spacing-4);
-    max-width: 1200px;
-  }
-  @media (min-width: 768px) {
-    .container-trust { padding-inline: var(--spacing-8); }
-  }
-
-  /* Primary Button (Pill) — the "human/trust" side */
   .btn-primary {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: var(--spacing-2);
-    background-color: var(--color-brass);
-    color: var(--color-chalk);
+    background-color: var(--color-chalk);
+    color: var(--color-void);
     border-radius: var(--radius-pill);
-    padding: var(--spacing-4) var(--spacing-6);
+    padding: 14px 28px;
     font-family: var(--font-sans);
     font-weight: 500;
     font-size: 15px;
-    letter-spacing: -0.15px;
+    letter-spacing: -0.015em;
     transition: box-shadow var(--transition-base), transform var(--transition-fast), background-color var(--transition-base);
     cursor: pointer;
+    border: none;
   }
   .btn-primary:hover {
-    background-color: #a66528;
-    box-shadow: var(--shadow-warm);
+    background-color: var(--color-linen);
+    box-shadow: var(--shadow-brass);
     transform: translateY(-1px);
   }
   .btn-primary:active { transform: translateY(0); }
 
-  /* Ghost Button (Pill) — the "technology" side */
   .btn-ghost {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: var(--spacing-2);
     background-color: transparent;
-    color: var(--color-drafting-blue);
-    border: 1px solid var(--color-drafting-blue);
+    color: var(--color-chalk);
+    border: 1px solid rgba(255,255,255,0.4);
     border-radius: var(--radius-pill);
-    padding: var(--spacing-4) var(--spacing-6);
+    padding: 14px 28px;
     font-family: var(--font-sans);
     font-weight: 500;
     font-size: 15px;
-    letter-spacing: -0.15px;
-    transition: box-shadow var(--transition-base), background-color var(--transition-base);
+    letter-spacing: -0.015em;
+    transition: all var(--transition-base);
     cursor: pointer;
   }
   .btn-ghost:hover {
-    background-color: rgb(46 90 139 / 0.06);
-    box-shadow: var(--shadow-glow);
+    background-color: rgba(255,255,255,0.06);
+    border-color: rgba(255,255,255,0.7);
   }
 
-  /* Service Card */
-  .card-trust {
-    background-color: var(--color-chalk);
-    border-radius: var(--radius-human);
-    box-shadow: var(--shadow-md);
-    border: 1px solid var(--semantic-border-subtle);
-    transition: box-shadow var(--transition-base), transform var(--transition-base);
-  }
-  .card-trust:hover {
-    box-shadow: var(--shadow-lg);
-    transform: translateY(-2px);
-  }
-
-  /* Technical monospace tag e.g. [01] */
-  .tag-mono {
-    font-family: var(--font-mono);
-    font-weight: 500;
-    font-size: 11px;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    color: var(--color-drafting-blue);
-  }
-
-  /* Trust Bar */
-  .trust-bar {
-    background-color: var(--color-paper);
+  .btn-brass {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-2);
+    background-color: var(--color-brass);
+    color: var(--color-void);
+    border-radius: var(--radius-pill);
+    padding: 14px 28px;
     font-family: var(--font-sans);
     font-weight: 500;
-    font-size: 13px;
-    color: var(--color-graphite);
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
+    font-size: 15px;
+    letter-spacing: -0.015em;
+    transition: all var(--transition-base);
+    cursor: pointer;
+    border: none;
+  }
+  .btn-brass:hover {
+    background-color: #d4943f;
+    box-shadow: var(--shadow-brass);
+    transform: translateY(-1px);
   }
 
-  /* Section eyebrow label */
+  .card-cinematic {
+    background-color: var(--color-obsidian);
+    border-radius: var(--radius-card);
+    border: 1px solid var(--semantic-border-subtle);
+    overflow: hidden;
+    box-shadow: var(--shadow-card);
+    transition: box-shadow var(--transition-base), transform var(--transition-base);
+  }
+  .card-cinematic:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-3px);
+  }
+
   .eyebrow {
     font-family: var(--font-mono);
     font-weight: 500;
-    font-size: 12px;
-    letter-spacing: 0.04em;
+    font-size: 11px;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--color-brass);
   }
 
-  /* Drafting-blue hairline divider */
-  .hairline-blue {
+  .hairline {
     height: 1px;
-    background: linear-gradient(90deg, transparent, var(--color-drafting-blue), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+  }
+
+  .hairline-brass {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--color-brass), transparent);
     opacity: 0.4;
   }
 }
@@ -240,14 +258,26 @@
 @layer utilities {
   .text-balance { text-wrap: balance; }
   .text-pretty { text-wrap: pretty; }
-  /* Scroll progress indicator */
+
   .scroll-progress {
     position: fixed;
     top: 0;
     left: 0;
-    height: 3px;
-    background-color: var(--color-brass);
+    height: 2px;
+    background: linear-gradient(90deg, var(--color-brass), var(--color-drafting-blue));
     z-index: 100;
     transition: width 100ms linear;
+  }
+
+  .text-gradient-brass {
+    background: linear-gradient(135deg, var(--color-brass) 0%, var(--color-linen) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .border-brass-glow {
+    border: 1px solid rgba(200,133,58,0.3);
+    box-shadow: 0 0 20px rgba(200,133,58,0.08);
   }
 }

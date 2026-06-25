@@ -34,16 +34,16 @@ export default function Navbar() {
     <header
       className={`fixed top-0 inset-x-0 z-50 transition-all duration-[var(--transition-base)] ${
         scrolled
-          ? "bg-[var(--color-paper)]/95 backdrop-blur-sm border-b border-[var(--semantic-border-subtle)]"
+          ? "bg-[rgba(0,0,0,0.85)] backdrop-blur-md border-b border-[rgba(255,255,255,0.06)]"
           : "bg-transparent"
       }`}
     >
       <nav className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2.5 group">
-          <span className="font-mono text-[11px] tracking-[0.04em] text-[var(--color-smoke)] hidden sm:inline">
+          <span className="font-mono text-[11px] tracking-[0.04em] text-[var(--color-ash)] hidden sm:inline">
             [617]
           </span>
-          <span className="font-serif text-xl text-[var(--color-ink)] group-hover:text-[var(--color-brass)] transition-colors">
+          <span className="font-serif text-xl text-[var(--color-chalk)] group-hover:text-[var(--color-brass)] transition-colors duration-200">
             617 East Trust
           </span>
         </Link>
@@ -54,7 +54,7 @@ export default function Navbar() {
             <a
               key={l.href}
               href={l.href}
-              className="text-sm text-[var(--color-graphite)] hover:text-[var(--color-ink)] transition-colors"
+              className="text-sm text-[var(--color-fog)] hover:text-[var(--color-chalk)] transition-colors duration-200"
             >
               {l.label}
             </a>
@@ -66,7 +66,7 @@ export default function Navbar() {
 
         {/* Mobile toggle */}
         <button
-          className="md:hidden p-2 text-[var(--color-ink)]"
+          className="md:hidden p-2 text-[var(--color-chalk)]"
           onClick={() => setOpen((v) => !v)}
           aria-label="Toggle menu"
           aria-expanded={open}
@@ -77,20 +77,20 @@ export default function Navbar() {
 
       {/* Mobile overlay */}
       {open && (
-        <div className="md:hidden fixed inset-0 top-16 bg-[var(--color-paper)] flex flex-col px-6 py-8 gap-1">
+        <div className="md:hidden fixed inset-0 top-16 bg-[var(--color-carbon)] flex flex-col px-6 py-8 gap-1">
           {navLinks.map((l) => (
             <a
               key={l.href}
               href={l.href}
               onClick={() => setOpen(false)}
-              className="py-3 text-lg text-[var(--color-ink)] border-b border-[var(--semantic-border-subtle)]"
+              className="py-3 text-lg text-[var(--color-chalk)] border-b border-[var(--semantic-border-subtle)] hover:text-[var(--color-brass)] transition-colors"
             >
               {l.label}
             </a>
           ))}
           <a
             href={SITE.phoneHref}
-            className="mt-6 flex items-center gap-2 text-[var(--color-drafting-blue)] font-medium"
+            className="mt-6 flex items-center gap-2 text-[var(--color-brass)] font-medium"
           >
             <Phone size={18} /> {SITE.phone}
           </a>
