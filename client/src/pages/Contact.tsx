@@ -12,6 +12,7 @@ const services = [
 
 export default function Contact() {
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -22,17 +23,29 @@ export default function Contact() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSubmitting(true);
     try {
       const res = await fetch("https://n8n.liberatedphoenix.net/webhook/617east-contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({
+          fullName: form.name,
+          email: form.email,
+          phone: form.phone,
+          service: form.service,
+          message: form.message,
+          submittedAt: new Date().toISOString(),
+        }),
       });
-      if (!res.ok) throw new Error(`Server responded ${res.status}`);
-      setSubmitted(true);
-    } catch (err) {
-      console.error("Form submission failed:", err);
-      alert("Something went wrong. Please try again or call us directly at (910) 315-1800.");
+      if (res.ok) {
+        setSubmitted(true);
+      } else {
+        alert("Something went wrong. Please try again or call us directly.");
+      }
+    } catch {
+      alert("Network error. Please check your connection or call us directly.");
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -147,9 +160,19 @@ export default function Contact() {
 
               <button
                 type="submit"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[var(--color-brass)] text-[var(--color-chalk)] rounded-[var(--radius-pill)] px-6 py-4 font-medium hover:brightness-110 hover:shadow-[var(--shadow-warm)] transition-all"
+                disabled={submitting}
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[var(--color-brass)] text-[var(--color-chalk)] rounded-[var(--radius-pill)] px-6 py-4 font-medium hover:brightness-110 hover:shadow-[var(--shadow-warm)] transition-all disabled:opacity-60 disabled:cursor-not-allowed"
               >
-                <Send size={18} /> Start the Conversation
+                {submitting ? (
+                  <>
+                    <span className="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    Sending…
+                  </>
+                ) : (
+                  <>
+                    <Send size={18} /> Start the Conversation
+                  </>
+                )}
               </button>
             </form>
           )}
