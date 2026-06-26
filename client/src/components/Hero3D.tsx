@@ -136,3 +136,7 @@ export function Hero3D() {
     </section>
   );
 }
+
+// Support both named and default import for compatibility
+export { Hero3D };
+export default Hero3D;
