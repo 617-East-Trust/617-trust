@@ -192,11 +192,11 @@ export const NAV_LINKS: { label: string; href: string }[] = [
 
 export const SITE = {
   name: "617 East Trust",
-  domain: "617easttrust.com",
+  domain: "617east.com",
   phone: "(910) 315-1800",
   phoneHref: "tel:+19103151800",
-  email: "hello@617easttrust.com",
-  emailHref: "mailto:hello@617easttrust.com",
+  email: "hello@617east.com",
+  emailHref: "mailto:hello@617east.com",
   smsHref: "sms:+19103151800",
   location: "Sandhills, North Carolina",
   servingArea: "Based in the Sandhills. Serving the Sandhills, Raleigh, and Fayetteville regions.",
