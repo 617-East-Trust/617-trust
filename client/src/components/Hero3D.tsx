@@ -137,6 +137,5 @@ export function Hero3D() {
   );
 }
 
-// Support both named and default import for compatibility
-export { Hero3D };
+// Support default import for Home.tsx while keeping named export
 export default Hero3D;
