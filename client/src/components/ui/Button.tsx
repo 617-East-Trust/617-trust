@@ -11,15 +11,17 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variants: Record<Variant, string> = {
-  // Brass fill — the "human/trust" side
+  // Primary — Warm brass, premium tactility, trustworthy
   primary:
-    "bg-[var(--color-brass)] text-[var(--color-chalk)] hover:shadow-[var(--shadow-warm)] hover:brightness-110",
-  // Drafting blue border — the "technology" side
+    "bg-[var(--color-brass)] text-[var(--color-void)] hover:bg-[var(--color-brass-glow)] hover:shadow-[var(--shadow-brass)] hover:brightness-105 active:brightness-95",
+
+  // Ghost — Tech / drafting blue accent
   ghost:
-    "bg-transparent text-[var(--color-drafting-blue)] border border-[var(--color-drafting-blue)] hover:bg-[var(--color-drafting-blue)] hover:text-[var(--color-chalk)]",
-  // Ink fill — strong contrast
+    "bg-transparent text-[var(--color-drafting-blue)] border border-[var(--color-drafting-blue)] hover:bg-[var(--color-drafting-blue)] hover:text-[var(--color-chalk)] hover:shadow-[var(--shadow-md)]",
+
+  // Dark — Strong contrast with brass border on hover
   dark:
-    "bg-[var(--color-ink)] text-[var(--color-paper)] hover:bg-[var(--color-graphite)]",
+    "bg-[var(--color-ink)] text-[var(--color-chalk)] border border-[var(--semantic-border-strong)] hover:bg-[var(--color-graphite)] hover:border-[var(--color-brass)]",
 };
 
 const sizes: Record<Size, string> = {
@@ -32,7 +34,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     <button
       ref={ref}
       className={cn(
-        "inline-flex items-center justify-center gap-2 font-medium tracking-tight rounded-[var(--radius-pill)] transition-all duration-[var(--transition-base)] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-drafting-blue)]",
+        "inline-flex items-center justify-center gap-2 font-medium tracking-tight rounded-[var(--radius-pill)] transition-all duration-[var(--transition-base)] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-brass)]",
         variants[variant],
         sizes[size],
         className
