@@ -8,11 +8,11 @@ import { useMemo, useRef } from 'react';
 import { ArrowRight, Phone } from 'lucide-react';
 import { Button, ButtonLink } from './ui/Button';
 import { SITE } from '@/lib/siteData';
-// Temporarily disabled for debugging
-// import { NCBackground } from './NCBackground';
+import { NCBackground } from './NCBackground';
 
 /**
- * Hero3D Component (NCBackground temporarily disabled)
+ * Hero3D Component
+ * Re-enabled NCBackground (Charlotte + Pinehurst focused)
  */
 
 // Existing ParticleField (kept and slightly enhanced)
@@ -73,8 +73,8 @@ function AnimatedHeadline({ text }: { text: string }) {
 export function Hero3D() {
   return (
     <section className="relative min-h-[100dvh] flex items-center justify-center overflow-hidden bg-[#050505] pt-16">
-      {/* NCBackground temporarily disabled for debugging */}
-      {/* <NCBackground variant="hero" intensity={0.75} /> */}
+      {/* NCBackground - Charlotte skyline + Pinehurst golf most visible */}
+      <NCBackground variant="hero" intensity={0.75} />
 
       {/* Three.js Particle Layer (tech depth) */}
       <div className="absolute inset-0 z-[1]">
