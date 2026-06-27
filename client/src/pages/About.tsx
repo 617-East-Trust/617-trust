@@ -75,7 +75,7 @@ export default function About() {
       <section className="bg-[var(--color-ink)] text-[var(--color-paper)] py-16">
         <div className="mx-auto max-w-2xl text-center px-4">
           <h2 className="text-[var(--color-paper)]">Ready to build something that lasts?</h2>
-          <p className="mt-4 text-white/60">
+          <p className="mt-4 text-[var(--color-ash)]">
             The world went digital. We stayed personal.
           </p>
           <div className="mt-8">

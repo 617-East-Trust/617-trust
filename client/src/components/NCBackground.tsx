@@ -50,7 +50,7 @@ export function NCBackground({ variant = 'hero', intensity = 0.7 }: NCBackground
       className="absolute inset-0 overflow-hidden pointer-events-none z-0"
       aria-hidden="true"
     >
-      {/* Base atmospheric gradient (enhances cinematic feel) */}
+      {/* Base atmospheric gradient - light mode */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_30%,rgba(0,0,0,0.3)_0%,rgba(5,5,5,0.85)_70%)]" />
 
       {/* === Distant Mountains (Blue Ridge / rural NC) - Atmospheric === */}
@@ -175,10 +175,10 @@ export function NCBackground({ variant = 'hero', intensity = 0.7 }: NCBackground
         </svg>
       </motion.div>
 
-      {/* Strong bottom fade for text readability */}
+      {/* Strong bottom fade for text readability - light */}
       <div className="absolute bottom-0 left-0 right-0 h-[55%] bg-gradient-to-t from-[#050505] via-[#050505]/95 to-transparent" />
 
-      {/* Subtle vignette */}
+      {/* Subtle vignette - light */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_40%,rgba(5,5,5,0.65)_85%)]" />
     </div>
   );

@@ -9,29 +9,29 @@
 
 /* ─────── Tier 1: Primitives ─────── */
 :root {
-  /* Deep, rich darks (refined from cinematic base) */
-  --color-void: #050505;
-  --color-carbon: #0a0a0c;
-  --color-obsidian: #121317;
-  --color-graphite: #1a1a1f;
-  --color-steel: #2a2a2f;
-  --color-smoke: #3a3a40;
-  --color-ash: #66666b;
-  --color-bone: #99999e;
-  --color-fog: #b3b3b8;
-  --color-linen: #f5f5f0;
-  --color-chalk: #f4f1eb;           /* warm bone for country warmth */
-  --color-paper: #f8f5f0;
+  /* Light, warm neutrals */
+  --color-void: #faf8f5;
+  --color-carbon: #f5f2ed;
+  --color-obsidian: #ffffff;
+  --color-graphite: #f0ece6;
+  --color-steel: #e8e4dc;
+  --color-smoke: #d4cfc6;
+  --color-ash: #9a948a;
+  --color-bone: #6b655c;
+  --color-fog: #5a544c;
+  --color-linen: #2a2620;
+  --color-chalk: #1a1714;
+  --color-paper: #141210;
 
-  /* Brand Accent — Refined warm brass (premium, heritage, golden hour) */
-  --color-brass: #b8975e;
-  --color-brass-dim: #8a6640;
-  --color-brass-glow: #d4b87a;
-  --gradient-brass: linear-gradient(103deg, #b8975e 0%, #d4b87a 40%, #b8975e 70%, transparent);
+  /* Brand Accent — warm brass */
+  --color-brass: #8a6640;
+  --color-brass-dim: #6b4f30;
+  --color-brass-glow: #b8975e;
+  --gradient-brass: linear-gradient(103deg, #8a6640 0%, #b8975e 40%, #8a6640 70%, transparent);
 
   /* Supporting accents */
-  --color-drafting-blue: #4a7ab5;
-  --color-sage: #7a9b7a;
+  --color-drafting-blue: #3a6a9e;
+  --color-sage: #5a7b5a;
 
   /* Spacing (4px base) */
   --spacing-1: 4px;
@@ -45,7 +45,7 @@
   --spacing-20: 80px;
   --spacing-24: 96px;
 
-  /* Radii — mix sharp modern + premium cards */
+  /* Radii */
   --radius-sharp: 2px;
   --radius-tech: 4px;
   --radius-card: 12px;
@@ -53,21 +53,21 @@
   --radius-human: 16px;
   --radius-pill: 9999px;
 
-  /* Premium shadows (Solana-inspired emboss + cinematic depth) */
-  --shadow-sm: 0 1px 2px rgba(0,0,0,0.35), inset 0 -1px 0 rgba(255,255,255,0.06);
-  --shadow-md: 0 4px 16px rgba(0,0,0,0.45), inset 0 -2px 0 rgba(255,255,255,0.08);
-  --shadow-lg: 0 10px 40px rgba(0,0,0,0.55);
-  --shadow-card: rgba(0,0,0,0.4) 0px 10px 30px 0px, rgba(255,255,255,0.05) 0px 1px 0px inset;
-  --shadow-brass: 0 0 0 1px rgba(184,151,94,0.35), 0 4px 24px rgba(184,151,94,0.22);
-  --shadow-warm: 0 4px 20px rgba(184,151,94,0.25);
-  --shadow-glow: 0 0 40px rgba(184,151,94,0.15);
+  /* Light-mode shadows */
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.06), inset 0 -1px 0 rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.08), inset 0 -2px 0 rgba(0,0,0,0.04);
+  --shadow-lg: 0 10px 40px rgba(0,0,0,0.10);
+  --shadow-card: rgba(0,0,0,0.06) 0px 4px 16px 0px, rgba(0,0,0,0.03) 0px 1px 0px inset;
+  --shadow-brass: 0 0 0 1px rgba(138,102,64,0.25), 0 4px 16px rgba(138,102,64,0.12);
+  --shadow-warm: 0 4px 16px rgba(138,102,64,0.15);
+  --shadow-glow: 0 0 30px rgba(138,102,64,0.08);
 
   /* Transitions */
   --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
   --transition-base: 300ms cubic-bezier(0.4, 0, 0.2, 1);
   --transition-slow: 600ms cubic-bezier(0.4, 0, 0.2, 1);
 
-  /* Typography scale tokens (impactful, tight tracking on large sizes) */
+  /* Typography scale tokens */
   --text-caption: 12px;
   --leading-caption: 1.5;
   --tracking-caption: 0.01em;
@@ -112,8 +112,8 @@
   --semantic-text-secondary: var(--color-fog);
   --semantic-text-tertiary: var(--color-bone);
   --semantic-text-muted: var(--color-ash);
-  --semantic-border-subtle: rgba(255,255,255,0.06);
-  --semantic-border-strong: rgba(255,255,255,0.15);
+  --semantic-border-subtle: rgba(0,0,0,0.06);
+  --semantic-border-strong: rgba(0,0,0,0.12);
   --semantic-accent-primary: var(--color-brass);
   --semantic-accent-tech: var(--color-drafting-blue);
   --semantic-accent-local: var(--color-sage);
@@ -129,7 +129,7 @@
   --color-muted-foreground: var(--semantic-text-secondary);
   --color-border: var(--semantic-border-subtle);
   --color-primary: var(--semantic-accent-primary);
-  --color-primary-foreground: var(--color-void);
+  --color-primary-foreground: #ffffff;
   --color-secondary: var(--semantic-accent-tech);
   --color-secondary-foreground: var(--color-chalk);
 
@@ -206,7 +206,7 @@
 
   ::selection {
     background-color: rgba(184, 151, 94, 0.3);
-    color: var(--color-chalk);
+    color: var(--color-ink);
   }
 }
 
@@ -265,7 +265,7 @@
 
   .btn-ghost:hover {
     background-color: var(--color-drafting-blue);
-    color: var(--color-chalk);
+    color: #ffffff;
     box-shadow: var(--shadow-md);
   }
 
@@ -276,7 +276,7 @@
     justify-content: center;
     gap: var(--spacing-2);
     background-color: var(--color-ink);
-    color: var(--color-chalk);
+    color: var(--color-paper);
     border-radius: var(--radius-pill);
     padding: 14px 28px;
     font-family: var(--font-sans);
@@ -285,7 +285,7 @@
     letter-spacing: -0.015em;
     transition: all var(--transition-base);
     cursor: pointer;
-    border: 1px solid var(--semantic-border-strong);
+    border: 1px solid var(--color-ink);
   }
 
   .btn-dark:hover {
@@ -306,7 +306,7 @@
   .card-cinematic:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow-lg);
-    border-color: rgba(184, 151, 94, 0.2);
+    border-color: rgba(184, 151, 94, 0.3);
   }
 
   /* Utility classes */
