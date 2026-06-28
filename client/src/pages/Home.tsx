@@ -40,7 +40,7 @@ const HowItWorks = () => (
           <div key={index} className="card-cinematic p-8">
             <div className="text-[#b8975e] text-sm tracking-widest mb-4">0{index + 1}</div>
             <h3 className="text-2xl mb-4">{step.title}</h3>
-            <p className="text-[#f4f1eb]/85 leading-relaxed">{step.description}</p>
+            <p className="text-[#f4f1eb]/85 leading-relaxed">{step.body}</p>
           </div>
         ))}
       </div>

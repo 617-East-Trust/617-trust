@@ -1,5 +1,5 @@
 import { ButtonLink } from "@/components/ui/Button";
-import { SITE } from "@/lib/siteData";
+import { SITE, CREDENTIALS } from "@/lib/siteData";
 import { ArrowRight, Check } from "lucide-react";
 
 export default function About() {
@@ -61,7 +61,7 @@ export default function About() {
             Credentials &amp; Background
           </p>
           <ul className="space-y-3">
-            {SITE.credentials.map((c) => (
+            {CREDENTIALS.map((c) => (
               <li key={c} className="flex items-start gap-3">
                 <Check size={18} className="text-[var(--color-brass)] mt-0.5 shrink-0" />
                 <span className="text-base">{c}</span>

@@ -130,7 +130,7 @@ export function Hero3D() {
               <div className="flex items-center gap-1 text-[#b8975e]">
                 {'\u2605'.repeat(5)}
               </div>
-              <p className="mt-3 text-[#f4f1eb]/90">“{signal}”</p>
+              <p className="mt-3 text-[#f4f1eb]/90">"{signal.quote}"</p>
             </div>
           ))}
         </div>
