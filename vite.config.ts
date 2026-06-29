@@ -22,11 +22,21 @@ export default defineConfig({
     chunkSizeWarningLimit: 1600,
     rollupOptions: {
       output: {
-        manualChunks: {
-          vendor: ["react", "react-dom"],
-          router: ["wouter"],
-          three: ["three"],
-          "three-fiber": ["@react-three/fiber", "@react-three/drei"],
+        manualChunks(id) {
+          if (id.includes("node_modules")) {
+            if (id.includes("three") && !id.includes("three-fiber")) {
+              return "three";
+            }
+            if (
+              id.includes("@react-three/fiber") ||
+              id.includes("@react-three/drei")
+            ) {
+              return "three-fiber";
+            }
+            if (id.includes("wouter")) {
+              return "router";
+            }
+          }
         },
       },
     },
