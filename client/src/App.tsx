@@ -7,6 +7,7 @@ import ScrollProgress from "@/components/ScrollProgress";
 import Home from "@/pages/Home";
 import About from "@/pages/About";
 import Contact from "@/pages/Contact";
+import Services from "@/pages/Services";
 import ThankYou from "@/pages/ThankYou";
 import Privacy from "@/pages/Privacy";
 import Terms from "@/pages/Terms";
@@ -25,6 +26,10 @@ const ROUTE_META: Record<string, { title: string; desc: string }> = {
   "/about": {
     title: `About Us | ${SITE.name}`,
     desc: "We're a technology-powered business consulting firm built on old-fashioned relationships. Meet the team behind 617 East Trust.",
+  },
+  "/services": {
+    title: `Services | ${SITE.name}`,
+    desc: "LLC formation, SBA loan consulting, credit repair, bookkeeping, fractional CFO, and web design — all under one roof for North Carolina businesses.",
   },
   "/contact": {
     title: `Contact | ${SITE.name}`,
@@ -95,6 +100,7 @@ export default function App() {
         <Switch>
           <Route path="/" component={Home} />
           <Route path="/about" component={About} />
+          <Route path="/services" component={Services} />
           <Route path="/contact" component={Contact} />
           <Route path="/thank-you" component={ThankYou} />
           <Route path="/privacy" component={Privacy} />

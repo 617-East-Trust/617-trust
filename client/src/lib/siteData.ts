@@ -183,6 +183,20 @@ export const SITE = {
   preHeader: "Form. Grow. Maintain.",
   trustBar: "Real People. Real Answers. Every time.",
   logoMark: "Form. Grow. Maintain.",
+  founder: {
+    name: "Lamont Legrand",
+    photo: "/images/founder.jpg",
+    linkedin: "",
+    bio: "15+ years in Charlotte commercial banking. UNC Charlotte graduate. Sandhills native."
+  },
+  address: {
+    street: "[STREET ADDRESS — ADD YOURS]",
+    locality: "Sandhills",
+    region: "NC",
+    postalCode: "[ZIP]",
+    country: "US",
+    full: "Sandhills, North Carolina"
+  },
   phases: PHASES,
   testimonials: TESTIMONIALS,
   trustBadges: TRUST_BADGES,

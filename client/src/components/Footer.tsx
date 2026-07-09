@@ -64,23 +64,22 @@ export default function Footer() {
             <p className="font-mono text-[11px] tracking-[0.04em] uppercase text-[var(--color-chalk)]/40 mb-4">
               Connect
             </p>
-            <ul className="space-y-2.5 text-sm text-[var(--color-chalk)]/70">
-              <li className="flex items-center gap-2">
+            <address className="not-italic space-y-2.5 text-sm text-[var(--color-chalk)]/70">
+              <p className="flex items-center gap-2">
                 <MapPin size={14} className="text-[var(--color-sage)]" />
-                {SITE.location}
-              </li>
-              <li>
+                {SITE.address.full}
+              </p>
+              <p>
                 <a href={SITE.phoneHref} className="flex items-center gap-2 hover:text-[var(--color-brass)] transition-colors">
                   <Phone size={14} className="text-[var(--color-brass)]" /> {SITE.phone}
                 </a>
-              </li>
-              <li>
+              </p>
+              <p>
                 <a href={SITE.emailHref} className="flex items-center gap-2 hover:text-[var(--color-brass)] transition-colors">
                   <Mail size={14} className="text-[var(--color-drafting-blue)]" /> {SITE.email}
                 </a>
-              </li>
-            </ul>
-            <p className="mt-4 text-xs text-[var(--color-chalk)]/40">Sandhills, North Carolina</p>
+              </p>
+            </address>
           </div>
         </div>
 
