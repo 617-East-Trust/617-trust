@@ -1,27 +1,27 @@
-import { useEffect, useState } from "react";
+'use client';
 
-/** Thin brass scroll-progress indicator */
-export default function ScrollProgress() {
-  const [width, setWidth] = useState(0);
+import { useEffect, useState } from 'react';
 
-  useEffect(() => {
-    const onScroll = () => {
-      const scrollTop = document.documentElement.scrollTop;
-      const height =
-        document.documentElement.scrollHeight -
-        document.documentElement.clientHeight;
-      setWidth(height > 0 ? (scrollTop / height) * 100 : 0);
-    };
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+export function ScrollProgress() {
+ const [progress, setProgress] = useState(0);
 
-  return (
-    <div
-      className="scroll-progress"
-      style={{ width: `${width}%` }}
-      aria-hidden="true"
-    />
-  );
+ useEffect(() => {
+ const onScroll = () => {
+ const scrollTop = window.scrollY;
+ const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+ const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+ setProgress(pct);
+ };
+
+ window.addEventListener('scroll', onScroll, { passive: true });
+ onScroll(); // Initial call
+
+ return () => window.removeEventListener('scroll', onScroll);
+ }, []);
+
+ return (
+ <div className="scroll-progress" style={{ width: `${progress}%` }} aria-hidden="true" />
+ );
 }
+
+export default ScrollProgress;

@@ -1,45 +1,18 @@
-import { useEffect, useState } from "react";
+'use client';
 
-/**
- * GrainOverlay — fixed full-screen film grain / noise texture.
- * A hallmark of cinematic dark agency sites. Sits above content but
- * ignores pointer events. Uses an animated SVG turbulence so the grain
- * "shimmers" subtly rather than sitting dead-still.
- *
- * Respects prefers-reduced-motion: when set, the grain is static.
- */
-export function GrainOverlay({ opacity = 0.05 }: { opacity?: number }) {
-  const [reduced, setReduced] = useState(false);
-
-  useEffect(() => {
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setReduced(mq.matches);
-    const handler = (e: MediaQueryListEvent) => setReduced(e.matches);
-    mq.addEventListener("change", handler);
-    return () => mq.removeEventListener("change", handler);
-  }, []);
-
-  const turbulence = encodeURIComponent(
-    `<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'>
-      <filter id='n'>
-        <feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/>
-        <feColorMatrix type='saturate' values='0'/>
-      </filter>
-      <rect width='100%' height='100%' filter='url(#n)'/>
-    </svg>`
-  );
-
-  return (
-    <div
-      aria-hidden="true"
-      className="pointer-events-none fixed inset-0 z-[9999] mix-blend-soft-light"
-      style={{
-        opacity,
-        backgroundImage: `url("data:image/svg+xml,${turbulence}")`,
-        backgroundSize: "200px 200px",
-        animation: reduced ? undefined : "grainShift 0.6s steps(2) infinite",
-      }}
-    />
-  );
+export function GrainOverlay() {
+ return (
+ <div 
+ className="fixed inset-0 pointer-events-none z-[9999] opacity-[0.02]"
+ aria-hidden="true"
+ style={
+ {
+ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
+ mixBlendMode: 'overlay',
+ }
+ }
+ />
+ );
 }
+
 export default GrainOverlay;

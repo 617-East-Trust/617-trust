@@ -21,6 +21,7 @@ import WebDesignSeoService from "@/pages/WebDesignSeoService";
 import SmoothScroll from "@/components/SmoothScroll";
 import GrainOverlay from "@/components/GrainOverlay";
 import LoadingSequence from "@/components/LoadingSequence";
+import CustomCursor from "@/components/CustomCursor";
 
 const SITE = {
   name: "617 East Trust",
@@ -130,6 +131,7 @@ export default function App() {
     <SmoothScroll>
       <LoadingSequence />
       <GrainOverlay />
+      <CustomCursor />
       <div className="min-h-screen flex flex-col bg-[var(--color-paper)]">
         <ScrollProgress />
         <Navbar />
