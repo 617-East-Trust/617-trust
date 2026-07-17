@@ -83,6 +83,13 @@ export default function About() {
           business that lasts.
         </p>
 
+        <p className="text-[var(--color-ink)]/80">
+          But speed is a trap if it's the wrong move. The most important thing we
+          do is tell you what <em>not</em> to do — when not to incorporate, which
+          spend to hold, where the quiet after the sale is where trust is actually
+          built. That restraint is the point, not a footnote.
+        </p>
+
         {/* Credentials */}
         <div className="mt-12">
           <p className="font-mono text-xs tracking-[0.04em] uppercase text-[var(--color-smoke)] mb-4">
