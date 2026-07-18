@@ -3,7 +3,7 @@
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Points, PointMaterial } from '@react-three/drei';
 import * as THREE from 'three';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 import { useMemo, useRef, useState, useEffect, lazy, Suspense } from 'react';
 import { ArrowRight, Phone } from 'lucide-react';
 import { ButtonLink } from './ui/Button';
@@ -99,6 +99,12 @@ const ACTIVE_THEME: 'theme1' | 'theme2' = 'theme2';
 export function Hero3D() {
   const [Theme2Component, setTheme2Component] = useState<React.ComponentType | null>(null);
   const [isLowPower, setIsLowPower] = useState(false);
+  const prefersReduced = useReducedMotion();
+  const { scrollY } = useScroll();
+  // Hero 3D layer recedes + fades as the user scrolls past the first viewport
+  const layerY = useTransform(scrollY, [0, 800], [0, prefersReduced ? 0 : -160]);
+  const layerOpacity = useTransform(scrollY, [0, 700], [1, prefersReduced ? 1 : 0.15]);
+  const layerScale = useTransform(scrollY, [0, 800], [1, prefersReduced ? 1 : 1.08]);
 
   useEffect(() => {
     // Device capability detection — keep 3D off phones / no-WebGL contexts
@@ -117,6 +123,12 @@ export function Hero3D() {
 
   return (
     <section className="relative min-h-[100dvh] flex items-center justify-center overflow-hidden bg-[var(--color-void)] pt-16">
+      {/* Scroll-linked parallax wrapper: the 3D layer dollys up + fades as you scroll */}
+      <motion.div
+        style={{ y: layerY, opacity: layerOpacity, scale: layerScale }}
+        className="absolute inset-0"
+        aria-hidden="true"
+      >
       {/* Theme 2: Evolving Topography (wireframe city + morphing particles) */}
       {ACTIVE_THEME === 'theme2' && Theme2Component && !isLowPower && (
         <Theme2Component />
@@ -146,6 +158,7 @@ export function Hero3D() {
           </div>
         </>
       )}
+      </motion.div>
 
       {/* Content overlay for readability */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_35%,rgba(10,9,8,0.15)_0%,rgba(10,9,8,0.7)_65%)] z-[2]" />
