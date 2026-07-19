@@ -2,171 +2,183 @@
 
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
-import { Suspense, useMemo, useRef, useState, useEffect } from 'react';
+import { Suspense, useMemo, useRef, useEffect } from 'react';
 import { useReducedMotion } from './useReducedMotion';
-import {
-  EffectComposer,
-  Bloom,
-  Vignette,
-  Noise,
-} from '@react-three/postprocessing';
+import { EffectComposer, Bloom, Vignette, Noise } from '@react-three/postprocessing';
 import { BlendFunction } from 'postprocessing';
 
-interface EvolvingTopographyProps {
-  variant?: 'hero' | 'story';
+// Simplex noise implementation (inline to avoid deps)
+class SimplexNoise {
+  private p: number[];
+  constructor(seed = Math.random()) {
+    this.p = new Array(512);
+    const perm = new Array(256);
+    for (let i = 0; i < 256; i++) perm[i] = i;
+    let s = seed * 2147483647;
+    for (let i = 255; i > 0; i--) {
+      s = (s * 16807) % 2147483647;
+      const j = s % (i + 1);
+      [perm[i], perm[j]] = [perm[j], perm[i]];
+    }
+    for (let i = 0; i < 512; i++) this.p[i] = perm[i & 255];
+  }
+  noise2D(xin: number, yin: number) {
+    const F2 = 0.5 * (Math.sqrt(3) - 1);
+    const G2 = (3 - Math.sqrt(3)) / 6;
+    const s = (xin + yin) * F2;
+    const i = Math.floor(xin + s);
+    const j = Math.floor(yin + s);
+    const t = (i + j) * G2;
+    const X0 = i - t, Y0 = j - t;
+    const x0 = xin - X0, y0 = yin - Y0;
+    const i1 = x0 > y0 ? 1 : 0;
+    const j1 = x0 > y0 ? 0 : 1;
+    const x1 = x0 - i1 + G2, y1 = y0 - j1 + G2;
+    const x2 = x0 - 1 + 2 * G2, y2 = y0 - 1 + 2 * G2;
+    const ii = i & 255, jj = j & 255;
+    const grad = (hash: number, x: number, y: number) => {
+      const h = hash & 7;
+      const u = h < 4 ? x : y;
+      const v = h < 4 ? y : x;
+      return ((h & 1) === 0 ? u : -u) + ((h & 2) === 0 ? v : -v);
+    };
+    let n0 = 0, n1 = 0, n2 = 0;
+    let t0 = 0.5 - x0 * x0 - y0 * y0;
+    if (t0 >= 0) { t0 *= t0; n0 = t0 * t0 * grad(this.p[ii + this.p[jj]], x0, y0); }
+    let t1 = 0.5 - x1 * x1 - y1 * y1;
+    if (t1 >= 0) { t1 *= t1; n1 = t1 * t1 * grad(this.p[ii + i1 + this.p[jj + j1]], x1, y1); }
+    let t2 = 0.5 - x2 * x2 - y2 * y2;
+    if (t2 >= 0) { t2 *= t2; n2 = t2 * t2 * grad(this.p[ii + 1 + this.p[jj + 1]], x2, y2); }
+    return 70 * (n0 + n1 + n2);
+  }
 }
 
-// Theme 2: Evolving Topography of Trust
-// Combines procedural wireframe cityscape + morphing particle "617" formation
+const simplex = new SimplexNoise(42);
 
-// Procedural Wireframe Cityscape (Charlotte skyline)
-function WireframeCityscape() {
-  const meshRef = useRef<THREE.InstancedMesh>(null!);
-  const { size } = useThree();
+// Procedural Terrain Mesh with vertex displacement (represents financial terrain)
+function ProceduralTerrain() {
+  const meshRef = useRef<THREE.Mesh>(null!);
 
-  // Generate Charlotte-inspired skyline positions
-  const buildings = useMemo(() => {
-    const count = 350;
-    const positions: [number, number, number][] = [];
-    const heights: number[] = [];
-    const widths: number[] = [];
-    const depths: number[] = [];
-
-    const randNormal = () => {
-      let u = 0, v = 0;
-      while (u === 0) u = Math.random();
-      while (v === 0) v = Math.random();
-      return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
-    };
-
-    for (let i = 0; i < count; i++) {
-      const x = randNormal() * 6 + (Math.random() - 0.5) * 2;
-      const z = (Math.random() - 0.5) * 15;
-      const height = Math.pow(Math.random(), 2.5) * 6 + 0.5;
-      positions.push([x, height / 2, z]);
-      heights.push(height);
-      widths.push(0.3 + Math.random() * 0.7);
-      depths.push(0.3 + Math.random() * 0.7);
-    }
-
-    return { positions, heights, widths, depths, count };
+  const geometry = useMemo(() => {
+    const geo = new THREE.PlaneGeometry(60, 40, 120, 80);
+    return geo;
   }, []);
 
-  // Set up instance matrices
-  useMemo(() => {
-    const dummy = new THREE.Object3D();
-    if (!meshRef.current) return;
-
-    for (let i = 0; i < buildings.count; i++) {
-      const pos = buildings.positions[i];
-      dummy.position.set(pos[0], pos[1], pos[2]);
-      dummy.scale.set(buildings.widths[i], buildings.heights[i], buildings.depths[i]);
-      dummy.updateMatrix();
-      meshRef.current.setMatrixAt(i, dummy.matrix);
-    }
-    meshRef.current.instanceMatrix.needsUpdate = true;
-  }, [buildings]);
-
   useFrame((state) => {
-    const time = state.clock.elapsedTime;
-    if (meshRef.current) {
-      meshRef.current.rotation.y = time * 0.006;
-      meshRef.current.rotation.x = Math.sin(time * 0.003) * 0.02;
+    const time = state.clock.elapsedTime * 0.08;
+    if (!meshRef.current) return;
+    const positions = meshRef.current.geometry.attributes.position.array as Float32Array;
+    for (let i = 0; i < positions.length; i += 3) {
+      const x = positions[i];
+      const y = positions[i + 1];
+      // Multi-octave noise for natural terrain
+      const n1 = simplex.noise2D(x * 0.08 + time * 0.15, y * 0.06) * 2.5;
+      const n2 = simplex.noise2D(x * 0.18, y * 0.14 + time * 0.08) * 1.2;
+      const n3 = simplex.noise2D(x * 0.35, y * 0.28) * 0.4;
+      positions[i + 2] = n1 + n2 + n3;
     }
+    meshRef.current.geometry.attributes.position.needsUpdate = true;
+    meshRef.current.geometry.computeVertexNormals();
   });
 
   return (
-    <instancedMesh ref={meshRef} args={[new THREE.BoxGeometry(1, 1, 1), new THREE.MeshBasicMaterial({
-      wireframe: true,
-      color: '#b8975e',
-      transparent: true,
-      opacity: 0.35
-    }), buildings.count]} />
+    <mesh ref={meshRef} rotation={[-Math.PI / 2.2, 0, 0]} position={[0, -8, -3]}>
+      <meshBasicMaterial color="#b8975e" wireframe transparent opacity={0.14} />
+    </mesh>
   );
 }
 
-// Morphing Particle "617" System
-function MorphingParticles() {
-  const pointsRef = useRef<THREE.Points>(null!);
+// Floating geometric markers (guidance points through the terrain)
+function FloatingMarkers() {
+  const groupRef = useRef<THREE.Group>(null!);
 
-  const { positions, scattered, textShape } = useMemo(() => {
-    const count = 1400;
-    const scattered: [number, number, number][] = [];
-    const textShape: [number, number, number][] = [];
-
-    for (let i = 0; i < count; i++) {
-      scattered.push([
-        (Math.random() - 0.5) * 35,
-        (Math.random() - 0.5) * 25,
-        (Math.random() - 0.5) * 25
-      ]);
+  const markers = useMemo(() => {
+    const items: { x: number; y: number; z: number; scale: number; type: number; speed: number; phase: number }[] = [];
+    for (let i = 0; i < 18; i++) {
+      items.push({
+        x: (Math.random() - 0.5) * 25,
+        y: (Math.random() - 0.5) * 12 - 2,
+        z: (Math.random() - 0.5) * 18 - 4,
+        scale: 0.15 + Math.random() * 0.35,
+        type: Math.floor(Math.random() * 3),
+        speed: 0.2 + Math.random() * 0.4,
+        phase: Math.random() * Math.PI * 2,
+      });
     }
-
-    const glyphWidth = 5;
-    const glyphHeight = 7;
-
-    // "6" - left
-    for (let i = 0; i < 180; i++) {
-      const y = (i / 180 - 0.5) * glyphHeight;
-      textShape.push([-glyphWidth, y + (Math.random() - 0.5) * 0.4, (Math.random() - 0.5) * 1]);
-    }
-
-    // "1" - center
-    for (let i = 0; i < 180; i++) {
-      const y = (i / 180 - 0.5) * glyphHeight;
-      textShape.push([0, y + (Math.random() - 0.5) * 0.4, (Math.random() - 0.5) * 1]);
-    }
-
-    // "7" - right diagonal
-    for (let i = 0; i < 180; i++) {
-      const t = i / 180;
-      textShape.push([
-        glyphWidth * (t - 0.5),
-        glyphHeight * (0.5 - t * 0.8),
-        (Math.random() - 0.5) * 1
-      ]);
-    }
-
-    // Fill remainder
-    while (textShape.length < count) {
-      textShape.push([
-        (Math.random() - 0.5) * 35,
-        (Math.random() - 0.5) * 25,
-        (Math.random() - 0.5) * 25
-      ]);
-    }
-
-    const pos = new Float32Array(count * 3);
-    scattered.forEach((p, i) => {
-      pos[i * 3] = p[0];
-      pos[i * 3 + 1] = p[1];
-      pos[i * 3 + 2] = p[2];
-    });
-
-    return { positions: pos, scattered, textShape };
+    return items;
   }, []);
 
   useFrame((state) => {
     const time = state.clock.elapsedTime;
-    const morphProgress = Math.min(1, time / 2.5);
+    if (!groupRef.current) return;
+    groupRef.current.children.forEach((child, i) => {
+      const m = markers[i];
+      child.position.x = m.x + Math.sin(time * m.speed * 0.3 + m.phase) * 0.8;
+      child.position.y = m.y + Math.cos(time * m.speed * 0.25 + m.phase) * 0.6;
+      child.rotation.x = time * 0.15 * m.speed;
+      child.rotation.y = time * 0.2 * m.speed;
+    });
+  });
 
-    if (pointsRef.current) {
-      const pos = pointsRef.current.geometry.attributes.position.array as Float32Array;
-      for (let i = 0; i < pos.length / 3; i++) {
-        const sx = scattered[i][0];
-        const sy = scattered[i][1];
-        const sz = scattered[i][2];
-        const tx = textShape[i][0];
-        const ty = textShape[i][1];
-        const tz = textShape[i][2];
+  return (
+    <group ref={groupRef}>
+      {markers.map((m, i) => {
+        let geo: THREE.BufferGeometry;
+        if (m.type === 0) geo = new THREE.OctahedronGeometry(m.scale, 0);
+        else if (m.type === 1) geo = new THREE.IcosahedronGeometry(m.scale, 0);
+        else geo = new THREE.TetrahedronGeometry(m.scale, 0);
+        return (
+          <mesh key={i} position={[m.x, m.y, m.z]}>
+            <primitive object={geo} attach="geometry" />
+            <meshBasicMaterial color="#d6b878" wireframe transparent opacity={0.4} />
+          </mesh>
+        );
+      })}
+    </group>
+  );
+}
 
-        pos[i * 3] = sx + (tx - sx) * morphProgress;
-        pos[i * 3 + 1] = sy + (ty - sy) * morphProgress;
-        pos[i * 3 + 2] = sz + (tz - sz) * morphProgress;
-      }
-      pointsRef.current.geometry.attributes.position.needsUpdate = true;
-      pointsRef.current.rotation.y = time * 0.015;
+// Flow field particles (organic movement along noise-based flow lines)
+function FlowFieldParticles() {
+  const pointsRef = useRef<THREE.Points>(null!);
+
+  const { positions, velocities } = useMemo(() => {
+    const count = 1200;
+    const pos = new Float32Array(count * 3);
+    const vel = new Float32Array(count * 3);
+    for (let i = 0; i < count; i++) {
+      pos[i * 3] = (Math.random() - 0.5) * 40;
+      pos[i * 3 + 1] = (Math.random() - 0.5) * 25;
+      pos[i * 3 + 2] = (Math.random() - 0.5) * 20;
+      vel[i * 3] = 0;
+      vel[i * 3 + 1] = 0;
+      vel[i * 3 + 2] = 0;
     }
+    return { positions: pos, velocities: vel };
+  }, []);
+
+  useFrame((state) => {
+    const time = state.clock.elapsedTime;
+    if (!pointsRef.current) return;
+    const pos = pointsRef.current.geometry.attributes.position.array as Float32Array;
+    const scale = 0.04;
+    const speed = 0.015;
+    for (let i = 0; i < pos.length / 3; i++) {
+      const angle = simplex.noise2D(pos[i * 3] * scale + time * 0.06, pos[i * 3 + 1] * scale + time * 0.04) * Math.PI * 4;
+      velocities[i * 3] += Math.cos(angle) * speed;
+      velocities[i * 3 + 1] += Math.sin(angle) * speed;
+      pos[i * 3] += velocities[i * 3];
+      pos[i * 3 + 1] += velocities[i * 3 + 1];
+      // Damping
+      velocities[i * 3] *= 0.96;
+      velocities[i * 3 + 1] *= 0.96;
+      // Wrap around bounds
+      if (pos[i * 3] > 25) pos[i * 3] = -25;
+      if (pos[i * 3] < -25) pos[i * 3] = 25;
+      if (pos[i * 3 + 1] > 15) pos[i * 3 + 1] = -15;
+      if (pos[i * 3 + 1] < -15) pos[i * 3 + 1] = 15;
+    }
+    pointsRef.current.geometry.attributes.position.needsUpdate = true;
   });
 
   return (
@@ -180,10 +192,10 @@ function MorphingParticles() {
         />
       </bufferGeometry>
       <pointsMaterial
-        size={0.09}
-        color="#d6b878"
+        size={0.07}
+        color="#c4a55a"
         transparent
-        opacity={0.55}
+        opacity={0.45}
         sizeAttenuation
         blending={THREE.AdditiveBlending}
         depthWrite={false}
@@ -192,74 +204,74 @@ function MorphingParticles() {
   );
 }
 
-// Low-Poly Terrain (Sandhills)
-function LowPolyTerrain() {
-  const meshRef = useRef<THREE.Mesh>(null!);
-
-  const geometry = useMemo(() => {
-    const geometry = new THREE.PlaneGeometry(50, 20, 80, 30);
-    const positions = geometry.attributes.position.array as Float32Array;
-
-    for (let i = 0; i < positions.length; i += 3) {
-      const x = positions[i];
-      const z = positions[i + 1];
-      const noise = Math.sin(x * 0.2) * Math.cos(z * 0.15) * 0.8 +
-                  Math.sin(x * 0.35) * Math.cos(z * 0.25) * 0.4 +
-                  Math.sin(x * 0.5) * 0.2;
-      positions[i + 2] = noise * 1.5;
-    }
-    geometry.computeVertexNormals();
-    return geometry;
-  }, []);
+// Volumetric light shafts (subtle directional beams suggesting clarity)
+function LightShafts() {
+  const groupRef = useRef<THREE.Group>(null!);
 
   useFrame((state) => {
     const time = state.clock.elapsedTime;
-    if (meshRef.current) {
-      meshRef.current.position.z = Math.sin(time * 0.04) * 0.08;
-    }
+    if (!groupRef.current) return;
+    groupRef.current.rotation.y = Math.sin(time * 0.03) * 0.15;
+    groupRef.current.rotation.x = Math.cos(time * 0.025) * 0.05;
   });
 
   return (
-    <mesh ref={meshRef} geometry={geometry} rotation={[-Math.PI / 2, 0, 0]} position={[0, -10, -5]}>
-      <meshBasicMaterial
-        color="#b8975e"
-        transparent
-        opacity={0.12}
-        wireframe
-      />
-    </mesh>
+    <group ref={groupRef}>
+      {[0, 1, 2].map((i) => {
+        const angle = (i / 3) * Math.PI * 2 + 0.5;
+        const x = Math.cos(angle) * 4;
+        const z = Math.sin(angle) * 4;
+        return (
+          <mesh key={i} position={[x, 5, z]} rotation={[0.4, angle, 0]}>
+            <cylinderGeometry args={[0.08, 0.6, 25, 8, 1, true]} />
+            <meshBasicMaterial color="#e8d4a0" transparent opacity={0.025} side={THREE.DoubleSide} />
+          </mesh>
+        );
+      })}
+    </group>
   );
 }
 
-// Mouse parallax controller + gentle cinematic dolly
-function ParallaxController() {
+// Enhanced camera controller (scroll-linked + mouse parallax)
+function CameraController() {
   const { camera } = useThree();
   const mousePos = useRef({ x: 0, y: 0 });
+  const scrollRef = useRef(0);
 
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
+    const onMouseMove = (e: MouseEvent) => {
       mousePos.current.x = (e.clientX / window.innerWidth - 0.5) * 2;
       mousePos.current.y = (e.clientY / window.innerHeight - 0.5) * 2;
     };
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
+    const onScroll = () => {
+      scrollRef.current = window.scrollY;
+    };
+    window.addEventListener('mousemove', onMouseMove);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      window.removeEventListener('mousemove', onMouseMove);
+      window.removeEventListener('scroll', onScroll);
+    };
   }, []);
 
   useFrame((state) => {
     const time = state.clock.elapsedTime;
-    // Mouse-driven parallax
-    camera.position.x += (mousePos.current.x * 1.5 - camera.position.x) * 0.015;
-    camera.position.y += (mousePos.current.y * 0.8 - camera.position.y) * 0.015;
-    // Gentle cinematic breathing dolly
-    const baseZ = 10 + Math.sin(time * 0.12) * 0.6;
-    camera.position.z += (baseZ - camera.position.z) * 0.02;
+    const scrollFactor = Math.min(scrollRef.current / 800, 1);
+    // Mouse parallax (subtle)
+    const targetX = mousePos.current.x * 0.8 * (1 - scrollFactor);
+    const targetY = mousePos.current.y * 0.5 * (1 - scrollFactor);
+    camera.position.x += (targetX - camera.position.x) * 0.02;
+    camera.position.y += (targetY - camera.position.y) * 0.02;
+    // Cinematic breathing
+    const baseZ = 10 + Math.sin(time * 0.08) * 0.4;
+    camera.position.z += (baseZ - camera.position.z) * 0.015;
     camera.lookAt(0, 0, 0);
   });
 
   return null;
 }
 
-export function EvolvingTopography({ variant = 'hero' }: EvolvingTopographyProps) {
+export function EvolvingTopography() {
   const prefersReduced = useReducedMotion();
 
   if (prefersReduced) {
@@ -271,29 +283,26 @@ export function EvolvingTopography({ variant = 'hero' }: EvolvingTopographyProps
   return (
     <div className="absolute inset-0 z-0" aria-hidden="true">
       <Canvas
-        camera={{ position: [0, 0, 10], fov: 50 }}
+        camera={{ position: [0, 0, 10], fov: 48 }}
         gl={{ alpha: true, antialias: true, powerPreference: 'high-performance' }}
         dpr={[1, 1.6]}
       >
+        <fog attach="fog" args={['#050505', 15, 55]} />
         <Suspense fallback={null}>
-          <LowPolyTerrain />
-          <WireframeCityscape />
-          <MorphingParticles />
-          <ambientLight intensity={0.4} />
-          <ParallaxController />
+          <ProceduralTerrain />
+          <FloatingMarkers />
+          <FlowFieldParticles />
+          <LightShafts />
+          <ambientLight intensity={0.25} />
+          <CameraController />
           <EffectComposer multisampling={4}>
-            <Bloom
-              intensity={0.7}
-              luminanceThreshold={0.2}
-              luminanceSmoothing={0.9}
-              mipmapBlur
-            />
-            <Vignette eskil={false} offset={0.28} darkness={0.62} />
-            <Noise premultiply blendFunction={BlendFunction.OVERLAY} opacity={0.045} />
+            <Bloom intensity={0.5} luminanceThreshold={0.25} luminanceSmoothing={0.9} mipmapBlur />
+            <Vignette eskil={false} offset={0.3} darkness={0.65} />
+            <Noise premultiply blendFunction={BlendFunction.OVERLAY} opacity={0.035} />
           </EffectComposer>
         </Suspense>
       </Canvas>
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_35%,rgba(5,5,5,0.15)_0%,rgba(5,5,5,0.75)_65%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_32%,rgba(5,5,5,0.1)_0%,rgba(5,5,5,0.78)_62%)]" />
     </div>
   );
 }
