@@ -54,12 +54,13 @@ bash /home/debian/617east/redeploy.sh
 - Reduced-motion: all animation components check `useReducedMotion()` or `window.matchMedia('(prefers-reduced-motion: reduce)')`.
 - Commits push to GitHub AND redeploy to VPS in the same session — keep them paired.
 
-## SEO / Structured Data state (2026-07-18)
-- ProfessionalService JSON-LD: description + founder `knowsAbout` + `makesOffer` (refined in B-phase commit ff83b54).
-**Sandhills added** as `AdministrativeArea` in `areaServed` (commit aa49ff6, deployed 2026-07-19).
+## SEO / Structured Data state (2026-07-19)
+- ProfessionalService JSON-LD tightened (commit 628b6ca, deployed 2026-07-19): `makesOffer` typed as proper {Offer, itemOffered: Service} object; removed unverified `sameAs` array (fake company LinkedIn + fake GBP placeholder) and `founder.url` (unverified personal LinkedIn); `logo`/`image`/`brand.logo` all point to verified https://617east.com/favicon.svg (200 OK). Description + founder `knowsAbout` retained from B-phase commit ff83b54.
+- Sandhills added as `AdministrativeArea` in `areaServed` (commit aa49ff6, deployed 2026-07-19).
 - WebSite + SearchAction JSON-LD present.
 - Schema hours: by-appointment model (corrected from a false 9-5 weekday claim, commit 93f1412).
 - sitemap.xml + robots.txt verified live (pre-edge-regression).
+- NOTE: when real LinkedIn/GBP/social URLs are confirmed by the principal, re-add `sameAs` array and `founder.url` — they're intentionally omitted, not forgotten.
 
 ## Analytics / n8n webhook state (2026-07-18)
 - n8n runs on the VPS at `n8n.617east.com` (healthy, `{"status":"ok"}`); admin token provided by principal 2026-07-18 (JWT, expires ~2026-04 per `exp` claim — treat as session-scoped, do not commit).
