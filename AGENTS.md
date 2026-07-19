@@ -36,8 +36,9 @@ bash /home/debian/617east/redeploy.sh
 
 ## File Structure
 - `client/index.html` — two JSON-LD blocks (WebSite+SearchAction at top, ProfessionalService with `areaServed`/`hasOfferCatalog`/`founder` mid-doc). See SEO section.
-- `client/src/components/Hero3D.tsx — 3D hero with scroll parallax, reduced-motion safe.
-- `client/src/components/NCBackground.tsx` — Animated SVG layers (Charlotte skyline, Pinehurst golf, mountains); lazy-loaded, suppressed on `prefers-reduced-motion`.
+- `client/src/components/Hero3D.tsx — 3D hero; lazy-loads EvolvingTopography (Theme 2) on WebGL + non-reduced-motion; scroll parallax; reduced-motion safe.
+- `client/src/components/NCBackground.tsx — Animated SVG layers (Charlotte skyline, Pinehurst golf, mountains); lazy-loaded, suppressed on `prefers-reduced-motion`.
+- `client/src/components/EvolvingTopography.tsx` — **Live 3D visual system** (commit 816eba2): shader-displaced procedural terrain (GPU vertex shader, snoise), volumetric fog, focal gold marker with contact shadow + hover-detach, flow particles, DOF + chromatic-aberration post (reduced-motion safe; static gradient fallback).
 - `client/src/components/GrainOverlay.tsx` — Film grain overlay (opacity tuned to 0.035).
 - `client/src/pages/Home.tsx` — 3-phase narrative (Form/Grow/Maintain, honest-advisor voice). Testimonials section OMITTED (dead `TESTIMONIALS` export removed, `.tilt-card` CSS removed, anchors repointed to `/#why-us`).
 - `client/src/pages/About.tsx` — Honest-advisor thesis echo (restraint paragraph).
